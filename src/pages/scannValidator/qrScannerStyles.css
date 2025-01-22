@@ -1,0 +1,36 @@
+/* Estilos para el contenedor del dashboard */
+/* #qr-reader__dashboard_section {
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding: 10px;
+} */
+
+/* Estilos para los botones del dashboard */
+/* #qr-reader__camera_selection,
+#qr-reader__stop_button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 5px;
+  transition: background-color 0.3s ease;
+} */
+
+/* #qr-reader__camera_selection:hover,
+#qr-reader__stop_button:hover {
+  background-color: #45a049;
+} */
+
+/* Estilos para el contenedor del texto dentro del dashboard */
+/* #qr-reader__dashboard_section_text {
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+} */
+
+/* #qr-reader__dashboard_section {
+  display: none !important;
+} */
