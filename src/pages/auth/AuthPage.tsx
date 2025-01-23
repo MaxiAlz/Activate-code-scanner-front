@@ -1,8 +1,10 @@
 import { MdQrCodeScanner, MdRocketLaunch } from "react-icons/md";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { LoginForm } from "../../modules/auth/LoginForm";
+import { RoundedOutlineButton } from "../../components/Buttons/RoundedButtons";
 
 const AuthPage = () => {
+  const navigator = useNavigate();
   return (
     <div className="flex w-full items-center justify-center  h-screen">
       <div className="w-full border-stroke  xl:w-1/2 xl:shadow-1  lg:border p-4">
@@ -23,6 +25,10 @@ const AuthPage = () => {
               Documentacion aqui
             </Link>
           </p>
+          <RoundedOutlineButton
+            onClick={() => navigator("/overview")}
+            text="Ir al panel"
+          />
         </div>
         <div className="flex items-center text-primary  justify-center">
           <MdRocketLaunch size={20} />
