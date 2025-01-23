@@ -26,6 +26,7 @@ const AuthPage = () => {
             </Link>
           </p>
           <RoundedOutlineButton
+            className="text-primary"
             onClick={() => navigator("/overview")}
             text="Ir al panel"
           />

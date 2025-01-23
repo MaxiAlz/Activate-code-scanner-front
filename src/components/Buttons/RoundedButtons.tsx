@@ -1,11 +1,11 @@
-import React, { ButtonHTMLAttributes, ReactNode } from 'react';
-import { IconType } from 'react-icons/lib';
+import React, { ButtonHTMLAttributes, ReactNode } from "react";
+import { IconType } from "react-icons/lib";
 
 interface RoundedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text?: string;
   className?: string;
   icon?: ReactNode;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   isLoading?: boolean | false;
 }
@@ -14,14 +14,14 @@ interface RoundedOutlineButtonProps
   text?: string;
   className?: string;
   icon?: IconType;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   isLoading?: boolean | false;
 }
 interface IconButton extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   icon?: ReactNode;
-  type?: 'button' | 'submit' | 'reset';
+  type?: "button" | "submit" | "reset";
   disabled?: boolean;
   isLoading?: boolean | false;
 }
@@ -40,7 +40,7 @@ export const RoundedFilledButton = ({
       type={type}
       disabled={disabled}
       className={`font-medium cursor-pointer rounded-lg border flex items-center justify-center  ${
-        disabled ? 'border-disabled bg-disabled' : 'border-primary bg-primary'
+        disabled ? "border-disabled bg-disabled" : "border-primary bg-primary"
       } px-2 py-3 text-white transition hover:bg-opacity-90 ${className}`}
       {...props}
     >
@@ -63,7 +63,7 @@ export const RoundedOutlineButton: React.FC<RoundedOutlineButtonProps> = ({
   icon: Icon,
   onClick,
   text,
-  className = '',
+  className = "",
   disabled = false,
 }) => (
   <button
@@ -71,11 +71,11 @@ export const RoundedOutlineButton: React.FC<RoundedOutlineButtonProps> = ({
     disabled={disabled}
     className={`px-2 py-3 inline-flex items-center justify-center rounded-md text-center font-medium ${
       disabled
-        ? 'text-gray-400 cursor-not-allowed border-gray-300 hover:border-gray-300'
-        : 'text-black dark:text-white hover:bg-opacity-90 border hover:border-primary'
+        ? "text-gray-400 cursor-not-allowed border-gray-300 hover:border-gray-300"
+        : "text-black dark:text-white hover:bg-opacity-90 border hover:border-primary"
     } ${className}`}
   >
-    {Icon && <Icon size={25} className={disabled ? 'text-gray-400' : ''} />}
+    {Icon && <Icon size={25} className={disabled ? "text-gray-400" : ""} />}
     {text}
   </button>
 );
