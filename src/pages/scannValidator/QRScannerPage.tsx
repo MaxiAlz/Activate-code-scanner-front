@@ -10,6 +10,7 @@ const QRScannerPage = () => {
   const [scannerKey, setScannerKey] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  console.log("QRScannerPage errorMessage", errorMessage);
   useEffect(() => {
     let scanner: Html5QrcodeScanner | null = null;
 
