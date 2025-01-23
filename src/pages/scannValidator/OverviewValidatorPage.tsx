@@ -15,7 +15,7 @@ const OverviewValidatorPage = () => {
     <AppLayout>
       <div className="md:flex justify-center items-center lg:m-10 ">
         {/* Ventana de resumen de ingresos */}
-        <div className="md:w-1/2 sm:w-full shadow-xl ">
+        <div className="md:w-1/2 sm:w-full md:shadow-xl ">
           <section className="bg-primary  ">
             <div className="pt-4 mx-2 text-white ">
               <p className="text-2xl font-semibold">Nombre del Evento</p>

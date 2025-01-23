@@ -17,7 +17,7 @@ const useLoginFormik = () => {
     },
     validationSchema: Yup.object({
       userName: Yup.string().required("Ingrese un nombre valido"),
-      code: Yup.string().required("DEbe ingresar el codigo de acceso"),
+      code: Yup.string().required("Debe ingresar un codigo de acceso"),
     }),
     onSubmit: async (
       values: UserLoginData,

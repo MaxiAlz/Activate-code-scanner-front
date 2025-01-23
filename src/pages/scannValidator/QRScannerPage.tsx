@@ -1,88 +1,87 @@
 import { useEffect, useState } from "react";
-import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import "./qrScannerStyles.css";
 import { ScreenAlert } from "../../components/ScreenAlerts/ScreenAlert";
-import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
 import { FooterLogo } from "../../components/Navigation/FooterLogo";
+import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
+import { useNavigate } from "react-router";
 
 const QRScannerPage = () => {
+  const navigate = useNavigate();
   const [scanResult, setScanResult] = useState<string | null>(null);
-  const [scannerKey, setScannerKey] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
 
-  console.log("QRScannerPage errorMessage", errorMessage);
+  console.log("scanResult", scanResult);
+
   useEffect(() => {
-    let scanner: Html5QrcodeScanner | null = null;
-
-    const initializeScanner = () => {
-      scanner = new Html5QrcodeScanner(
-        "qr-reader",
-        {
-          qrbox: { width: 300, height: 300 }, // Tamaño del área de escaneo
-          fps: 25, // Cuadros por segundo
-          disableFlip: false, // Evita el volteo automático en cámaras frontales
-          rememberLastUsedCamera: true, // Recordar última cámara seleccionada
-          aspectRatio: 1.0, // Relación de aspecto de la cámara
-          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA], // Tipo de escaneo permitido
-        },
-        false
-      );
-
-      scanner.render(
-        (result) => {
-          setScanResult(result);
-          scanner?.clear();
-        },
-        (error) => console.warn("Escaneo fallido:", error)
-      );
-    };
-
-    const requestCameraPermission = () => {
-      navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(() => {
-          localStorage.setItem("cameraPermissionGranted", "true");
-          initializeScanner();
-        })
-        .catch((error) => {
-          console.warn("Permiso de cámara denegado", error);
-          setErrorMessage(
-            "No se pudo acceder a la cámara. Revisa los permisos."
-          );
-        });
-    };
-
-    const checkCameraPermission = async () => {
+    console.log("errorMessage", errorMessage);
+    const startScanner = async () => {
       try {
-        const result = await navigator.permissions.query({
-          name: "camera" as any,
+        const hasPermission = await navigator.mediaDevices.getUserMedia({
+          video: true,
         });
-        if (result.state === "granted") {
-          initializeScanner();
-        } else {
-          requestCameraPermission();
-        }
+        localStorage.setItem("cameraPermissionGranted", "true");
+        console.log("hasPermission", hasPermission);
+
+        const qrScanner = new Html5Qrcode("qr-reader");
+        setScanner(qrScanner);
+
+        qrScanner.start(
+          { facingMode: "environment" }, // Usa la cámara trasera si está disponible
+          {
+            fps: 25,
+            qrbox: { width: 250, height: 250 },
+            disableFlip: false,
+          },
+          (decodedText) => {
+            setScanResult(decodedText);
+            navigate("/scan-result");
+            qrScanner.stop();
+          },
+          (error) => console.warn("Error de escaneo:", error)
+        );
       } catch (error) {
-        console.warn("Error al verificar permisos de cámara:", error);
-        setErrorMessage("Error al verificar permisos de la cámara.");
+        console.warn("Permiso de cámara denegado", error);
+        setErrorMessage("No se pudo acceder a la cámara. Revisa los permisos.");
       }
     };
 
-    checkCameraPermission();
+    startScanner();
 
     return () => {
       if (scanner) {
         scanner
-          .clear()
-          .catch((error) => console.error("Error al limpiar escáner:", error));
+          .stop()
+          .catch((error) => console.error("Error al detener escáner:", error));
       }
     };
-  }, [scannerKey]);
+  }, []);
 
   const handleScanAgain = () => {
     setScanResult(null);
-    setScannerKey((prevKey) => prevKey + 1);
     setErrorMessage(null);
+
+    if (scanner) {
+      scanner
+        .start(
+          { facingMode: "environment" }, // Selecciona la cámara trasera si está disponible
+          {
+            fps: 25,
+            qrbox: { width: 300, height: 300 },
+            disableFlip: false,
+          },
+          (decodedText) => {
+            setScanResult(decodedText);
+            scanner.stop();
+          },
+          (error) => console.warn("Error de escaneo:", error)
+        )
+        .catch((error) => {
+          setErrorMessage("No se pudo reiniciar el escaneo.");
+          console.error("Error al reiniciar el escáner:", error);
+        });
+    }
   };
 
   return (
@@ -124,11 +123,8 @@ const QRScannerPage = () => {
           </div>
         )}
       </main>
-
       <FooterLogo />
     </div>
-
-    // </AppLayout>
   );
 };
 
