@@ -4,12 +4,15 @@ import "./qrScannerStyles.css";
 import { FooterLogo } from "../../components/Navigation/FooterLogo";
 import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
 import { useNavigate } from "react-router";
+import { MdErrorOutline } from "react-icons/md";
+import { Loader } from "../../Loader/Loader";
 
 const QRScannerPage = () => {
   const navigate = useNavigate();
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   console.log("scanResult", scanResult);
   console.log("errorMessage", errorMessage);
@@ -18,18 +21,17 @@ const QRScannerPage = () => {
     const startScanner = async () => {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         setErrorMessage(
-          "La función de escaneo de QR no es compatible con este navegador. Prueba con otro dispositivo."
+          "La función de escaneo de QR no es compatible con este navegador"
         );
+        setIsLoading(false);
         return;
       }
 
       try {
         await navigator.mediaDevices.getUserMedia({ video: true });
         localStorage.setItem("cameraPermissionGranted", "true");
-
         const qrScanner = new Html5Qrcode("qr-reader");
         setScanner(qrScanner);
-
         qrScanner.start(
           { facingMode: "environment" },
           {
@@ -44,9 +46,13 @@ const QRScannerPage = () => {
           },
           (error) => console.warn("Error de escaneo:", error)
         );
+        setIsLoading(false);
       } catch (error) {
         console.warn("Permiso de cámara denegado", error);
-        setErrorMessage("No se pudo acceder a la cámara. Revisa los permisos.");
+        setErrorMessage(
+          "No se pudo acceder a la cámara. Revisa los permisos o prueba con otro navegador"
+        );
+        setIsLoading(false);
       }
     };
 
@@ -70,7 +76,13 @@ const QRScannerPage = () => {
         <div className="md:flex justify-center items-center lg:m-10">
           <section className="md:w-1/3 sm:w-full md:shadow-xl ">
             {errorMessage ? (
-              <p className="text-error text-xl">{errorMessage}</p>
+              <div className="flex flex-col items-center justify-center w-full min-h-48  rounded-xl bg-slate-200">
+                <MdErrorOutline size={40} className="text-error" />
+                <p className="text-2xl text-slate-500 font-semibold">
+                  Oops! :(
+                </p>
+                <p className="text-error  m-4 text-center">{errorMessage}</p>
+              </div>
             ) : (
               <div
                 id="qr-reader"
@@ -82,15 +94,21 @@ const QRScannerPage = () => {
                 }}
               ></div>
             )}
-            <h1 className="text-center font-semibold text-xl mt-3">
-              Escanea E-Ticket:
-            </h1>
-            <p className="p-5">
-              Acerca el codigo qr de la entrada a la zona de muestra, si no se
-              detecta por malas impresiones o una gama de colores que no es
-              optima, pruba desde el buscador con el codigo que se encuentra
-              debajo del qr
-            </p>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <>
+                <h1 className="text-center font-semibold text-xl mt-3">
+                  Escanea E-Ticket:
+                </h1>
+                <p className="p-5">
+                  Acerca el codigo qr de la entrada a la zona de muestra, si no
+                  se detecta por malas impresiones o una gama de colores que no
+                  es optima, pruba desde el buscador con el codigo que se
+                  encuentra debajo del qr
+                </p>
+              </>
+            )}
           </section>
         </div>
       </main>
