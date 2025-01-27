@@ -1,10 +1,10 @@
-import { Html5Qrcode } from "html5-qrcode";
+import { CameraDevice, Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 
 const Test = () => {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const qrCodeRef = useRef<Html5Qrcode | null>(null);
-  const [devices, setDevices] = useState([]);
+  const [devices, setDevices] = useState<CameraDevice[]>([]);
 
   useEffect(() => {
     const initQrScanner = async () => {
