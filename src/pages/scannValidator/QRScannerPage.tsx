@@ -14,13 +14,6 @@ const QRScannerPage = () => {
   const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // console.log("scanResult", scanResult);
-  // console.log("errorMessage", errorMessage);
-  console.log("navigator.mediaDevices", navigator.mediaDevices);
-  console.log(
-    "!navigator.mediaDevices.getUserMedia",
-    !navigator.mediaDevices.getUserMedia
-  );
 
   useEffect(() => {
     const startScanner = async () => {
