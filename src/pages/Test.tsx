@@ -5,11 +5,13 @@ const Test = () => {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const qrCodeRef = useRef<Html5Qrcode | null>(null);
   const [devices, setDevices] = useState<CameraDevice[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const initQrScanner = async () => {
       if (!Html5Qrcode.getCameras) {
         alert("La cámara no es compatible en este navegador.");
+        setError("Tu navegador no soporta el acceso a la cámara.");
         return;
       }
 
@@ -34,9 +36,11 @@ const Test = () => {
           );
         } else {
           alert("No se encontraron cámaras disponibles.");
+          setError("No se encontraron cámaras disponibles.");
         }
       } catch (error) {
         alert(`Error al iniciar la cámara: ${error}`);
+        setError("No se encontraron cámaras disponibles.");
       }
     };
 
@@ -55,6 +59,7 @@ const Test = () => {
 
   return (
     <div>
+      <div className="text-error">errores: {error}</div>
       <h2>Escáner QR</h2>
       {scanResult ? (
         <p>Resultado: {scanResult}</p>
@@ -67,6 +72,7 @@ const Test = () => {
       >
         Detener escaneo
       </button>
+
       <div>
         {devices.map((dev, indx) => (
           <p>
