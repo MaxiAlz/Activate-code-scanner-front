@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router";
 import { AuthPage, OverviewValidatorPage, QRScannerPage } from "./pages";
 import ScanResultPage from "./pages/scannValidator/ScanResultPage";
+import { Test } from "./pages/Test";
 // import { ScreenAlert } from "./components/ScreenAlerts/ScreenAlert";
 
 // import { useSelector } from "react-redux";
@@ -36,6 +37,8 @@ function App() {
       <Route path="/overview" element={<OverviewValidatorPage />} />
       <Route path="/scan-qr" element={<QRScannerPage />} />
       <Route path="/scan-result" element={<ScanResultPage />} />
+      <Route path="/test" element={<Test   />} />
+
       {/* <Route path="/scan-result" element={<ScreenAlert status="success" />} /> */}
     </Routes>
   );

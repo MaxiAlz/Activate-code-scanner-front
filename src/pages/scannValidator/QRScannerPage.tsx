@@ -14,8 +14,13 @@ const QRScannerPage = () => {
   const [scanner, setScanner] = useState<Html5Qrcode | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  console.log("scanResult", scanResult);
-  console.log("errorMessage", errorMessage);
+  // console.log("scanResult", scanResult);
+  // console.log("errorMessage", errorMessage);
+  console.log("navigator.mediaDevices", navigator.mediaDevices);
+  console.log(
+    "!navigator.mediaDevices.getUserMedia",
+    !navigator.mediaDevices.getUserMedia
+  );
 
   useEffect(() => {
     const startScanner = async () => {
@@ -30,6 +35,7 @@ const QRScannerPage = () => {
       try {
         await navigator.mediaDevices.getUserMedia({ video: true });
         localStorage.setItem("cameraPermissionGranted", "true");
+
         const qrScanner = new Html5Qrcode("qr-reader");
         setScanner(qrScanner);
         qrScanner.start(
@@ -41,8 +47,8 @@ const QRScannerPage = () => {
           },
           (decodedText) => {
             setScanResult(decodedText);
-            navigate("/scan-result");
             qrScanner.stop();
+            navigate("/scan-result");
           },
           (error) => console.warn("Error de escaneo:", error)
         );
