@@ -51,7 +51,7 @@ const ScreenAlert = ({
   const { color, icon, message } = statusConfig[status];
   const navigate = useNavigate();
   return (
-    <section className=" ">
+    <main className="">
       <div className={`${color}`}>
         <button className="p-4 text-white" onClick={() => navigate(-1)}>
           <MdArrowBack size={30} />
@@ -64,42 +64,48 @@ const ScreenAlert = ({
         <p className="text-2xl">{message}</p>
         <p>{scanResult}</p>
       </div>
-
-      <div className="m-4">
-        <p>
-          E-Ticket ID:
-          <span className="font-bold mx-1"> ACT123C</span>
-        </p>
-        <p>
-          Titular:
-          <span className="font-bold mx-1"> Pollo Pollmendez del Valle</span>
-        </p>
-        <p>
-          DNI:
-          <span className="font-bold mx-1"> 25.365.236</span>
-        </p>
-        <p>
-          Transaccion:
-          <span className="font-bold mx-1"> #5625</span>
-        </p>
-        <p>
-          Tranferido:
-          <span className="font-bold mx-1"> NO</span>
-        </p>
-        <p>
-          Detalles:
-          <span className="font-bold mx-1"> Platea techada</span>
-        </p>
+      <div className="flex w-full justify-center">
+        <section className="lg:w-1/3 shadow-xl p-5">
+          <div className="m-4">
+            <p>
+              E-Ticket ID:
+              <span className="font-bold mx-1"> ACT123C</span>
+            </p>
+            <p>
+              Titular:
+              <span className="font-bold mx-1">
+                {" "}
+                Pollo Pollmendez del Valle
+              </span>
+            </p>
+            <p>
+              DNI:
+              <span className="font-bold mx-1"> 25.365.236</span>
+            </p>
+            <p>
+              Transaccion:
+              <span className="font-bold mx-1"> #5625</span>
+            </p>
+            <p>
+              Tranferido:
+              <span className="font-bold mx-1"> NO</span>
+            </p>
+            <p>
+              Detalles:
+              <span className="font-bold mx-1"> Platea techada</span>
+            </p>
+          </div>
+          <div className="flex justify-around mt-10">
+            <RoundedOutlineButton text="Agregar algo" icon={MdNotes} />
+            <RoundedFilledButton
+              onClick={handleScanAgain}
+              text="Escanear otro"
+              icon={<MdQrCodeScanner />}
+            />
+          </div>
+        </section>
       </div>
-      <div className="flex justify-around mt-10">
-        <RoundedOutlineButton text="Agregar algo" icon={MdNotes} />
-        <RoundedFilledButton
-          onClick={handleScanAgain}
-          text="Escanear otro"
-          icon={<MdQrCodeScanner />}
-        />
-      </div>
-    </section>
+    </main>
   );
 };
 

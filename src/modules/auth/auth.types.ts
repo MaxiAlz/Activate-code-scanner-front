@@ -4,12 +4,20 @@ export enum AuthStatus {
   "AUTHENTICATED",
 }
 export interface LoginState {
-  accessCodeName: string;
+  sessionData: UserAuthenticatedData | null;
   status: AuthStatus;
-  userName: string;
+  error: string;
 }
 
 export interface UserLoginData {
   userName: string;
   code: string;
+}
+
+export interface UserAuthenticatedData {
+  nameAccessCode: string;
+  eventName: string;
+  totalTickets: number;
+  scannedTickets: number;
+  remainingTickets: number;
 }

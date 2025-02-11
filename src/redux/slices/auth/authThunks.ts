@@ -19,18 +19,17 @@ const loginUser =
       const response = await apiService.post("/Auth/accesscode", userData);
 
       // Preparar manualmente la data para guardar en el estado
-      const dataAuthenticated = {
-        code: response.data,
-        userName: userData.userName,
-      };
+      // const dataAuthenticated = {
+      //   code: response.data,
+      //   userName: userData.userName,
+      // };
 
       if (response.status === 200) {
-        dispatch(setUserAuthenticated(dataAuthenticated));
+        dispatch(setUserAuthenticated(response.data));
         return response;
       }
     } catch (error) {
       console.log("error", error);
-      // dispatch(setError(`Failed to login ${error}`));
       dispatch(setLogoutUser());
     }
   };
@@ -39,7 +38,7 @@ const checkUserSession =
   (): ThunkAction<void, RootState, unknown, Action<string>> =>
   async (dispatch: Dispatch) => {
     try {
-      const response = await apiService.get("/Auth/profile");
+      const response = await apiService.get("/Auth/accesscode/profile");
       if (response.status === 200) {
         dispatch(setUserAuthenticated(response.data));
       } else {
@@ -51,4 +50,18 @@ const checkUserSession =
     }
   };
 
-export { loginUser, checkUserSession };
+const logoutUser =
+  (): ThunkAction<void, RootState, unknown, Action<string>> =>
+  async (dispatch: Dispatch) => {
+    try {
+      const response = await apiService.post("/Auth/logout");
+      if (response.status === 200) {
+        dispatch(setLogoutUser());
+      }
+    } catch (error) {
+      console.log("error", error);
+      // setError("Error al salir de la sesion");
+    }
+  };
+
+export { loginUser, checkUserSession, logoutUser };

@@ -8,25 +8,27 @@ import {
   MdPerson,
   MdRocketLaunch,
 } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router";
-import { RootState } from "../../redux/store";
+import { RootState, store } from "../../redux/store";
+import { logoutUser } from "../../redux/slices/auth/authThunks";
 
 const NavbarDrawer: React.FC = () => {
-  const { userName, accessCodeName } = useSelector(
+  const { sessionData } = useSelector(
     (state: RootState) => state.accessCodeAuth
   );
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const navigate = useNavigate();
-
+  const dispatch = useDispatch<typeof store.dispatch>();
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
     navigate("/");
-    console.log("Cerrando sesión...");
   };
+
   return (
     <>
       <nav className="bg-primary text-white">
@@ -42,15 +44,13 @@ const NavbarDrawer: React.FC = () => {
               </button>
             </div>
 
-            {userName ? (
+            {sessionData?.eventName ? (
               <aside>
                 <div className="flex items-center text-2xl">
                   <MdPerson size={25} />
-                  <span className=" font-semibold">{userName}</span>
+                  <span className=" font-semibold">Activate!</span>
                 </div>
-                <p className="text-end text-sm text-boxdark-2">
-                  {accessCodeName}
-                </p>
+                <p className="text-end text-sm text-boxdark-2">Scaner</p>
               </aside>
             ) : (
               <div className="flex items-center text-2xl">

@@ -1,7 +1,7 @@
 import { MdQrCodeScanner, MdRocketLaunch } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
-import { LoginForm } from "../../modules/auth/LoginForm";
 import { RoundedOutlineButton } from "../../components/Buttons/RoundedButtons";
+import { LoginForm } from "../../modules/auth/components/LoginForm";
 
 const AuthPage = () => {
   const navigator = useNavigate();

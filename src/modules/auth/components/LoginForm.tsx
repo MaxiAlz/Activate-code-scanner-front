@@ -1,10 +1,10 @@
-import { RoundedFilledButton } from "../../components/Buttons/RoundedButtons";
 import {
   MdLogin,
   MdOutlineNoEncryption,
   MdPersonOutline,
 } from "react-icons/md";
-import { useLoginFormik } from "./useLoginFormik";
+import { RoundedFilledButton } from "../../../components/Buttons/RoundedButtons";
+import { useLoginFormik } from "../useLoginFormik";
 
 const LoginForm = () => {
   const loginFormik = useLoginFormik();

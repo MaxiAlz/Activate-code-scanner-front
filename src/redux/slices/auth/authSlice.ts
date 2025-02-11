@@ -2,33 +2,33 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   AuthStatus,
   LoginState,
-  UserLoginData,
+  UserAuthenticatedData,
 } from "../../../modules/auth/auth.types";
 
 const initialState: LoginState = {
-  accessCodeName: "",
-  userName: "",
+  sessionData: null,
   status: AuthStatus.CHECKING,
-  // error: "",
+  error: "",
 };
 
 export const accessCodeAuthSlice = createSlice({
   name: "accessCodeAuth",
   initialState,
   reducers: {
-    setUserAuthenticated: (state, action: PayloadAction<UserLoginData>) => {
-      state.accessCodeName = action.payload.code;
-      state.userName = action.payload.userName;
+    setUserAuthenticated: (
+      state,
+      action: PayloadAction<UserAuthenticatedData>
+    ) => {
+      state.sessionData = action.payload;
       state.status = AuthStatus.AUTHENTICATED;
     },
-    setLogoutUser(state: LoginState) {
-      state.accessCodeName = "";
-      state.userName = "";
+    setLogoutUser(state) {
+      state.sessionData = null;
       state.status = AuthStatus["NOT-AUTHENTICATED"];
     },
-    // setError: (state, action: PayloadAction<string>) => {
-    //   state.error = action.payload;
-    // },
+    setError: (state, action: PayloadAction<string>) => {
+      state.error = action.payload;
+    },
   },
 });
 export const { setUserAuthenticated, setLogoutUser } =
