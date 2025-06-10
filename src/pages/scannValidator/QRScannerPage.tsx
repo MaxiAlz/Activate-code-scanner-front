@@ -5,13 +5,31 @@ import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { scanActions } from "../../modules/scaner/actions/scanActions";
 
 const QRScannerPage = () => {
   const navigate = useNavigate();
-  const [scanResult, setScanResult] = useState<string | null>(null);
+  // const [scanResult, setScanResult] = useState<string | null>(null);
   const qrCodeRef = useRef<Html5Qrcode | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const handleCheckTicketsByQrCode = async (ticketCode: string) => {
+    setIsLoading(true);
+    try {
+      const response = await scanActions.checkTickets(ticketCode);
+
+      if (response?.status === 200) {
+        navigate("/scan-result", { state: response.data });
+      }
+      return response;
+    } catch (error) {
+      alert(`Error al validar el ticket: ${error}`);
+      console.log("error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const initQrScanner = async () => {
@@ -32,10 +50,7 @@ const QRScannerPage = () => {
             { facingMode: "environment" }, // Usa la cámara trasera por defecto
             { fps: 10, qrbox: { width: 250, height: 250 } },
             (decodedText) => {
-              // stopScanner();
-              setScanResult(decodedText);
-              alert(`Codigo escaneado: ${decodedText}`);
-              navigate("/scan-result");
+              handleCheckTicketsByQrCode(decodedText);
             },
             (errorMessage) => {
               console.warn("No se pudo leer el código:", errorMessage);
@@ -68,7 +83,7 @@ const QRScannerPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className={`${scanResult && "hidden"}`}>
+      <header>
         <NavbarDrawer />
       </header>
       <main className="flex-grow">
@@ -101,16 +116,12 @@ const QRScannerPage = () => {
                   Escanea E-Ticket:
                 </h1>
                 <p className="p-5">
-                  Acerca el codigo QR, si
-                  tienes problemas para escanear, pruba desde el buscador con el
-                  E-Ticket ID
+                  Acerca el codigo QR, si tienes problemas para escanear, pruba
+                  desde el buscador con el E-Ticket ID
                 </p>
               </>
             )}
           </section>
-          {/* {devices.map((div) => (
-            <p>{div.label}</p>
-          ))} */}
         </div>
       </main>
       <FooterLogo />

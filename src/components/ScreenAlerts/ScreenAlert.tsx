@@ -15,8 +15,16 @@ import { useNavigate } from "react-router";
 
 interface ScreenAlertProps {
   status: "success" | "denied" | "warning" | "info";
-  scanResult: string;
+  sanMessage: string;
   handleScanAgain: () => void;
+  codeResultData: ScanResult;
+}
+
+interface ScanResult {
+  code: string;
+  dni: string;
+  name: string;
+  timeOfEntry: string;
 }
 
 const statusConfig = {
@@ -45,8 +53,9 @@ const statusConfig = {
 // esta pantalla recibira las props para , acceso permitido, denegado o ya se escaneo
 const ScreenAlert = ({
   status,
-  scanResult,
+  sanMessage,
   handleScanAgain,
+  codeResultData,
 }: ScreenAlertProps) => {
   const { color, icon, message } = statusConfig[status];
   const navigate = useNavigate();
@@ -61,38 +70,38 @@ const ScreenAlert = ({
         className={`${color} pb-4 text-white items-center flex justify-center flex-col`}
       >
         {icon}
-        <p className="text-2xl">{message}</p>
-        <p>{scanResult}</p>
+        <p className="text-2xl">{sanMessage}</p>
+        <p>{message}</p>
       </div>
       <div className="flex w-full justify-center">
         <section className="lg:w-1/3 shadow-xl p-5">
           <div className="m-4">
             <p>
               E-Ticket ID:
-              <span className="font-bold mx-1"> ACT123C</span>
+              <span className="font-bold mx-1"> {codeResultData.code}</span>
             </p>
             <p>
               Titular:
-              <span className="font-bold mx-1">
-                {" "}
-                Pollo Pollmendez del Valle
-              </span>
+              <span className="font-bold mx-1"> {codeResultData.name}</span>
             </p>
             <p>
               DNI:
-              <span className="font-bold mx-1"> 25.365.236</span>
+              <span className="font-bold mx-1"> {codeResultData.dni}</span>
             </p>
-            <p>
+            {/* <p>
               Transaccion:
               <span className="font-bold mx-1"> #5625</span>
-            </p>
-            <p>
+            </p> */}
+            {/* <p>
               Tranferido:
               <span className="font-bold mx-1"> NO</span>
-            </p>
+            </p> */}
             <p>
-              Detalles:
-              <span className="font-bold mx-1"> Platea techada</span>
+              Ingreso:
+              <span className="font-bold mx-1">
+                {" "}
+                {codeResultData.timeOfEntry}
+              </span>
             </p>
           </div>
           <div className="flex justify-around mt-10">

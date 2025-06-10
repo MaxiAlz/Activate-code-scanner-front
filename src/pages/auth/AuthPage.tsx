@@ -33,7 +33,7 @@ const AuthPage = () => {
         </div>
         <div className="flex items-center text-primary  justify-center">
           <MdRocketLaunch size={20} />
-          <h2 className="text-xl font-bold uppercase">Activate!</h2>
+          <h2 className="text-xl font-bold uppercase">Takillero!</h2>
         </div>
       </div>
     </div>

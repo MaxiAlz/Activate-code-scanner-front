@@ -23,6 +23,7 @@ const loginUser =
       //   code: response.data,
       //   userName: userData.userName,
       // };
+      console.log("response", response);
 
       if (response.status === 200) {
         dispatch(setUserAuthenticated(response.data));
@@ -55,12 +56,12 @@ const logoutUser =
   async (dispatch: Dispatch) => {
     try {
       const response = await apiService.post("/Auth/logout");
+      console.log("response", response);
       if (response.status === 200) {
         dispatch(setLogoutUser());
       }
     } catch (error) {
       console.log("error", error);
-      // setError("Error al salir de la sesion");
     }
   };
 

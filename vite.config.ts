@@ -11,9 +11,9 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "Activate! QR Scanner PWA",
-        short_name: "Activate! Scanner",
-        description: "A PWA for valdidate E-tickets for Activate!",
+        name: "Takillero! QR Scanner PWA",
+        short_name: "Takillero! Scanner",
+        description: "A PWA for valdidate E-tickets for Takillero!",
         theme_color: "#ffffff",
         background_color: "#ffffff",
         display: "standalone",

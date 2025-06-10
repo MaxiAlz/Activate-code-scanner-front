@@ -25,7 +25,8 @@ const NavbarDrawer: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    await dispatch(logoutUser());
+    const resp = await dispatch(logoutUser());
+    console.log("resp=>", resp);
     navigate("/");
   };
 
@@ -48,14 +49,14 @@ const NavbarDrawer: React.FC = () => {
               <aside>
                 <div className="flex items-center text-2xl">
                   <MdPerson size={25} />
-                  <span className=" font-semibold">Activate!</span>
+                  <span className=" font-semibold">Takillero!</span>
                 </div>
                 <p className="text-end text-sm text-boxdark-2">Scaner</p>
               </aside>
             ) : (
               <div className="flex items-center text-2xl">
                 <MdRocketLaunch size={25} />
-                <span className=" font-semibold">Activate!</span>
+                <span className=" font-semibold">Takillero!</span>
               </div>
             )}
           </div>

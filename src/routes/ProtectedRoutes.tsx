@@ -9,7 +9,6 @@ interface ProtectedRouterProps {
 }
 
 const ProtectedRoutes = ({ children }: ProtectedRouterProps) => {
-  console.log("ProtectedRoutes :>> ");
   const { status, sessionData } = useSelector(
     (state: RootState) => state.accessCodeAuth
   );

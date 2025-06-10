@@ -21,33 +21,12 @@ function App() {
 
     verifySession();
   }, [dispatch]);
-  // const dispatch: AppDispatch = useDispatch();
-  // const { status, userName } = useSelector(
-  //   (state: RootState) => state.accessCodeAuth
-  // );
-
-  // const verifySession = async () => {
-  //   dispatch(checkUserSession());
-  // };
-
-  // 9EDD75869D
-
-  /* TODO:
-
-  Cuando se escanea un codigo recibir informacion del tiket, evento, titular y elresultado del escaneo (success, denegado, advertencia,)
-  Secion del usuario debe traer informacion del evento:
-        - Total de tickets que se van a escanear
-        - ingresos realizados
-        - ingresos restantes ( o no, los calculo por front)
-  Buscador de tickets: buscar por E-ticket ID o DNI
-  Recibir el nombre de la persona que escanea los tickets:
-  */
 
   return status === AuthStatus.CHECKING ? (
     <Loader />
   ) : (
     <Routes>
-      {/* RUTAS PUBLICAS */}
+      {/* RUTAS PROTEGIDAS */}
       {protectedRoutes.map((route, index) => (
         <Route
           key={index}
@@ -60,7 +39,7 @@ function App() {
         />
       ))}
 
-      {/* RUTAS PROTEGIDAS */}
+      {/* RUTAS publicas */}
       {notAuthenticatedRoutes.map((route, index) => (
         <Route
           key={index}
