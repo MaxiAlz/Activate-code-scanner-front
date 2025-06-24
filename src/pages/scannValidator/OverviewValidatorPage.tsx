@@ -10,12 +10,14 @@ import { AppLayout } from "../../Layouts/AppLayout";
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
+import { useState } from "react";
 
 const OverviewValidatorPage = () => {
   const navigate = useNavigate();
   const { sessionData } = useSelector(
     (state: RootState) => state.accessCodeAuth
   );
+  const [eticketToSearch, setEticketToSearch] = useState<string>("");
   return (
     <AppLayout>
       <div className="md:flex justify-center items-center lg:m-10 ">
@@ -24,7 +26,8 @@ const OverviewValidatorPage = () => {
           <section className="bg-primary  ">
             <div className="pt-4 mx-2 text-white ">
               <p className="text-2xl font-semibold">{sessionData?.eventName}</p>
-              <p className="text-lg ">Viernes 7 Agosto 2025 - 21:30Hs</p>
+              {/* <p className="text-lg ">Viernes 7 Agosto 2025 - 21:30Hs</p> */}
+              <p className="text-lg">{sessionData?.nameAccessCode}</p>
             </div>
 
             <div className="grid grid-cols-3 gap-4 py-5">
@@ -65,7 +68,7 @@ const OverviewValidatorPage = () => {
                 name="eticketId"
                 placeholder="Ingresa un E-ticket ID"
                 className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                // onChange={loginFormik.handleChange}
+                onChange={(e) => setEticketToSearch(e.target.value)}
                 // onBlur={loginFormik.handleBlur}
                 // value={loginFormik.values.email}
               />
@@ -76,13 +79,21 @@ const OverviewValidatorPage = () => {
             </div>
 
             <div className="flex w-full justify-center mt-10">
-              <RoundedFilledButton
-                className=""
-                text="Escanear E-Tickets"
-                type="button"
-                onClick={() => navigate("/scan-qr")}
-                icon={<MdQrCodeScanner size={25} />}
-              />
+              {eticketToSearch.length > 0 ? (
+                <RoundedFilledButton
+                  text="Buscar E-Ticket"
+                  type="button"
+                  // onClick={() => navigate("/scan-qr")}
+                  icon={<MdSearch size={25} />}
+                />
+              ) : (
+                <RoundedFilledButton
+                  text="Escanear E-Tickets"
+                  type="button"
+                  onClick={() => navigate("/scan-qr")}
+                  icon={<MdQrCodeScanner size={25} />}
+                />
+              )}
             </div>
           </section>
         </div>
