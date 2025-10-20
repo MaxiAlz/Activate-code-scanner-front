@@ -5,7 +5,7 @@ import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { scanActions } from "../../modules/scaner/actions/scanActions";
+import { scanRepository } from "../../modules/scaner/repositories/scanRepository";
 
 const QRScannerPage = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const QRScannerPage = () => {
     setIsLoading(true);
     try {
       await qrCodeRef.current?.pause(); // Pausa el escáner mientras se valida
-      const response = await scanActions.checkTickets(ticketCode);
+      const response = await scanRepository.checkTickets(ticketCode);
 
       if (response?.status === 200) {
         navigate("/scan-result", { state: response.data });
@@ -76,9 +76,9 @@ const QRScannerPage = () => {
 
   const stopScanner = () => {
     if (qrCodeRef.current) {
-      qrCodeRef.current.stop().catch((error) =>
-        alert(`Error al detener el escáner: ${error}`)
-      );
+      qrCodeRef.current
+        .stop()
+        .catch((error) => alert(`Error al detener el escáner: ${error}`));
     }
   };
 
@@ -93,7 +93,9 @@ const QRScannerPage = () => {
             {errorMessage ? (
               <div className="flex flex-col items-center justify-center w-full min-h-48 rounded-xl bg-slate-200">
                 <MdErrorOutline size={40} className="text-error" />
-                <p className="text-2xl text-slate-500 font-semibold">Oops! :(</p>
+                <p className="text-2xl text-slate-500 font-semibold">
+                  Oops! :(
+                </p>
                 <p className="text-error m-4 text-center">{errorMessage}</p>
               </div>
             ) : (
@@ -114,8 +116,8 @@ const QRScannerPage = () => {
                   Escaneá tu E-Ticket:
                 </h1>
                 <p className="p-5 text-center text-sm text-gray-600">
-                  Acercá el código QR. Si tenés problemas para escanearlo,
-                  probá buscarlo manualmente con el ID del E-Ticket.
+                  Acercá el código QR. Si tenés problemas para escanearlo, probá
+                  buscarlo manualmente con el ID del E-Ticket.
                 </p>
               </>
             )}

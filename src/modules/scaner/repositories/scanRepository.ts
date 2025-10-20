@@ -2,10 +2,10 @@ import { AxiosResponse } from "axios";
 import { apiService } from "../../../services/apiService";
 import { ApiResponse, TicketsDataByScan } from "../types/scanTypes";
 
-const scanActions = {
-  validateTicket: async (ticketsIds: number[]) => {
+const scanRepository = {
+  validateTicket: async (ticketsCodes: string[]) => {
     const response = await apiService.post("/Scan/validate", {
-      ticketIds: ticketsIds,
+      ticketsCode: ticketsCodes,
     });
     return response;
   },
@@ -20,4 +20,4 @@ const scanActions = {
   },
 };
 
-export { scanActions };
+export { scanRepository };

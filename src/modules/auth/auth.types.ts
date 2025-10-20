@@ -4,7 +4,7 @@ export enum AuthStatus {
   "AUTHENTICATED",
 }
 export interface LoginState {
-  sessionData: UserAuthenticatedData | null;
+  sessionData: userAuthenticatedResponse | null;
   status: AuthStatus;
   error: string;
 }
@@ -14,7 +14,12 @@ export interface UserLoginData {
   code: string;
 }
 
-export interface UserAuthenticatedData {
+interface userAuthenticatedResponse {
+  message: string;
+  data: UserAuthenticatedData;
+}
+
+interface UserAuthenticatedData {
   nameAccessCode: string;
   eventName: string;
   totalTickets: number;
