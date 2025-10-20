@@ -6,12 +6,16 @@ export interface ApiResponse<T> {
 }
 
 export interface TicketsDataByScan {
-  personName: string;
-  eventName: string;
-  personDni: string;
-  tickets: TicketTypeScaned[];
+  message: string;
+  data: TicketScanedDetail;
 }
 
+interface TicketScanedDetail {
+  personName: "string";
+  eventName: "string";
+  personDni: "string";
+  ticket: TicketTypeScaned;
+}
 export interface TicketTypeScaned {
   id: number;
   code: string;

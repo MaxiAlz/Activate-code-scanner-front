@@ -10,10 +10,10 @@ const scanRepository = {
     return response;
   },
 
+  // Obtiene la información del/los ticket(s) escaneado(s) por código QR
   checkTickets: async (
     code: string
   ): Promise<AxiosResponse<ApiResponse<TicketsDataByScan>>> => {
-    console.log("code", code);
     return await apiService.get<ApiResponse<TicketsDataByScan>>(
       `/Scan/check/${code}`
     );

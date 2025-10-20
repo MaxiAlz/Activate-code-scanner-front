@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
-
-import { GiTicket } from "react-icons/gi";
-import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
-import { scanRepository } from "../../modules/scaner/repositories/scanRepository";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
+import { FooterLogo } from "../../components/Navigation/FooterLogo";
+import { IoTicket } from "react-icons/io5";
+import {
+  RoundedFilledButton,
+  RoundedOutlineButton,
+} from "../../components/Buttons/RoundedButtons";
+import { MdArrowBack } from "react-icons/md";
 
 interface dataTickets {
   personName: string;
@@ -24,168 +27,67 @@ interface ScanData {
 
 const ScanResultPage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const scanData: ScanData | undefined = location.state;
+  const queryClient = useQueryClient();
+
+  const scanData = queryClient.getQueryData<ScanData>([
+    "ticketScan",
+    "last-scanned-ticket",
+  ]);
 
   console.log("scanData", scanData);
 
-  const [status, setStatus] = useState<"loading" | "success" | "error" | null>(
-    null
-  );
-  const [message, setMessage] = useState<string>("");
-
-  useEffect(() => {
-    if (!scanData) {
-      navigate("/scan-qr");
-    }
-  }, [scanData, navigate]);
-
-  if (!scanData) {
-    return <p>Cargando...</p>;
+  if (!scanData?.data) {
+    navigate("/");
+    return null;
   }
 
-  const handleValidateTicket = async () => {
-    setStatus("loading");
-    setMessage("Validando ticket...");
-    try {
-      const response = await scanRepository.validateTicket([
-        scanData.data.ticket.code,
-      ]);
-      if (response.status === 200) {
-        setStatus("success");
-        setMessage(
-          `Ticket validado correctamente para ${scanData.data.personName}`
-        );
-      } else {
-        setStatus("error");
-        setMessage(response.data?.message || "Error al validar el ticket");
-      }
-    } catch (error) {
-      setStatus("error");
-      setMessage("Error al validar el ticket");
-      console.error(error);
-    }
-  };
-
-  const onScanAgain = () => navigate("/scan-qr", { replace: true });
-  const onGoHome = () => navigate("/", { replace: true });
-
-  const getStatusClasses = () => {
-    switch (status) {
-      case "success":
-        return "bg-green-100 text-green-800 border-green-300";
-      case "error":
-        return "bg-red-100 text-red-800 border-red-300";
-      case "loading":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      default:
-        return "";
-    }
-  };
+  const { personName, personDni, eventName, ticket } = scanData.data;
 
   return (
-    <main className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header */}
-
-      {scanData.data && (
-        <header className="bg-primary text-white shadow p-4 sticky top-0 z-10">
-          <div className="max-w-md mx-auto">
-            <h1 className="text-xl font-bold text-gray-800">
-              {scanData.data.personName}
-            </h1>
-            <p className="text-sm text-gray-600">
-              DNI: {scanData.data.personDni}
-            </p>
-          </div>
-        </header>
-      )}
-
-      {/* Ticket Info */}
-      {scanData && (
-        <section className="flex-1 p-4 max-w-md mx-auto">
-          <h2 className="text-lg font-semibold mb-2">
-            {scanData.data.eventName}
-          </h2>
-          <div className="rounded-lg border p-4 flex items-center space-x-4 bg-white shadow-sm">
-            <GiTicket className="h-8 w-8 text-gray-600" />
-            <div className="flex-1">
-              <h3 className="font-semibold">
-                {/* {scanData.ticket?.ticketTypeName} */}
-              </h3>
-              <p className="text-sm text-gray-500">
-                ID: {scanData.data.ticket.id}
-              </p>
-              <p className="text-sm text-gray-500">
-                Código: {scanData.data.ticket.code}
-              </p>
-              <p className="text-sm mt-1">
-                Estado:{" "}
-                <span
-                  className={`inline-block px-2 py-1 rounded-full text-xs font-medium border ${
-                    scanData.data.ticket.state === "BUYED"
-                      ? "bg-green-100 text-green-800 border-green-200"
-                      : scanData.data.ticket.state === "USED"
-                      ? "bg-gray-100 text-gray-800 border-gray-200"
-                      : "bg-red-100 text-red-800 border-red-200"
-                  }`}
-                >
-                  {scanData.data.ticket.state === "BUYED"
-                    ? "Disponible"
-                    : scanData.data.ticket.state === "USED"
-                    ? "Usado"
-                    : "Expirado"}
-                </span>
-              </p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Validation / Result */}
-      {status && (
-        <section
-          className={`max-w-md mx-auto mt-4 p-4 rounded-lg border ${getStatusClasses()} shadow`}
-        >
-          <div className="flex items-center space-x-2">
-            {status === "success" && <FaCheckCircle className="h-6 w-6" />}
-            {status === "error" && <FaTimesCircle className="h-6 w-6" />}
-            {status === "loading" && (
-              <div className="animate-spin h-5 w-5 border-2 border-yellow-500 rounded-full"></div>
-            )}
-            <span className="font-medium">{message}</span>
-          </div>
-
-          {(status === "success" || status === "error") && (
-            <div className="mt-4 flex space-x-2">
-              <button
-                onClick={onScanAgain}
-                className="flex-1 py-2 px-4 bg-primary text-white rounded-lg hover:bg-primary-500"
-              >
-                Escanear otro
-              </button>
-              <button
-                onClick={onGoHome}
-                className="flex-1 py-2 px-4 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
-              >
-                Volver al inicio
-              </button>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Validate Button */}
-      {!status && (
-        <div className="max-w-md mx-auto p-4">
+    <div className="flex flex-col min-h-screen">
+      <div className="bg-slate-500 text-white shadow-lg ">
+        <div className="m-4 w-full">
           <button
-            onClick={handleValidateTicket}
-            className="w-full py-3 px-4 rounded-lg font-medium text-white bg-primary hover:bg-primary-500"
+            className="flex items-center gap-2 font-semibold"
+            onClick={() => navigate("/")}
           >
-            Validar Ticket
+            <MdArrowBack size={30} /> <p>Volver</p>
           </button>
         </div>
-      )}
-    </main>
+        <div className="flex flex-col items-center text-center  gap-2 px-10 py-10">
+          <IoTicket size={50} />
+          <p className="text-xl font-bold">¡TICKET ENCONTRADO!</p>
+          <p className="text-md ">
+            Verifica los datos y validá el ingreso de la persona
+          </p>
+        </div>
+      </div>
+      <div className="text-center my-4 text-lg text-primary font-bold uppercase">
+        <p>{eventName}</p>
+      </div>
+      <div className=" space-y-2 mx-10  text-xl">
+        <p className=" ">
+          Nombre: <span className="font-semibold">{personName}</span>
+        </p>
+        <p className="">
+          DNI: <span className="font-semibold">{personDni}</span>
+        </p>
+
+        <p className="">
+          Codigo: <span className="font-semibold">{ticket.code}</span>
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-4 mt-8 mx-4">
+        <RoundedFilledButton
+          onClick={() => navigate(`/scan-confirm/${ticket.code}`)}
+          text="Validar y confirmar Ingreso"
+        />
+        <RoundedOutlineButton text="Cancelar" onClick={() => navigate("/")} />
+      </div>
+
+      <FooterLogo />
+    </div>
   );
 };
 

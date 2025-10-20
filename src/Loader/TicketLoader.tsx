@@ -1,13 +1,13 @@
-import { MdRocketLaunch } from "react-icons/md";
 import "./RocketLoader.css";
+import { IoTicket } from "react-icons/io5";
 
-const RocketLoader = () => {
+const TicketLoader = () => {
   return (
     <div className="loader-container text-primary">
-      <MdRocketLaunch className="rocket-icon" />
+      <IoTicket className="rocket-icon" />
       <div className="exhaust-flame"></div>
     </div>
   );
 };
 
-export { RocketLoader };
+export { TicketLoader };

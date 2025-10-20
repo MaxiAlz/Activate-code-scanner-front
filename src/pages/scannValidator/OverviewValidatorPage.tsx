@@ -1,68 +1,35 @@
-import {
-  MdClose,
-  MdPeopleAlt,
-  MdQrCodeScanner,
-  MdSearch,
-} from "react-icons/md";
-import { IoTicketSharp } from "react-icons/io5";
+import { MdQrCodeScanner, MdSearch } from "react-icons/md";
 import { RoundedFilledButton } from "../../components/Buttons/RoundedButtons";
 import { AppLayout } from "../../Layouts/AppLayout";
 import { useNavigate } from "react-router";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { useState } from "react";
+import { OverviewEvent } from "../../modules/scaner/components/OverviewEvent";
+import { useCheckTicketMutation } from "../../modules/scaner/hooks/useCheckTicketMutation";
 
 const OverviewValidatorPage = () => {
   const navigate = useNavigate();
   const { sessionData } = useSelector(
     (state: RootState) => state.accessCodeAuth
   );
+  const checkTicketMutation = useCheckTicketMutation();
   const [eticketToSearch, setEticketToSearch] = useState<string>("");
 
   console.log("sessionData", sessionData);
+
+  const handleSearchEticket = async () => {
+    console.log("eticketToSearch", eticketToSearch);
+    await checkTicketMutation.mutateAsync(eticketToSearch);
+  };
   return (
     <AppLayout>
       <div className="md:flex justify-center items-center lg:m-10 ">
         {/* Ventana de resumen de ingresos */}
         {sessionData && sessionData.data && (
           <div className="md:w-1/2 sm:w-full md:shadow-xl ">
-            <section className="bg-primary  ">
-              <div className="pt-4 mx-2 text-white ">
-                <p className="text-2xl font-semibold">
-                  {sessionData.data.eventName}
-                </p>
-                {/* <p className="text-lg ">Viernes 7 Agosto 2025 - 21:30Hs</p> */}
-                <p className="text-lg">{sessionData.data.nameAccessCode}</p>
-              </div>
+            <OverviewEvent eventData={sessionData.data} />
 
-              <div className="grid grid-cols-3 gap-4 py-5">
-                <div className="flex flex-col items-center">
-                  <span className="font-semibold text-white text-center">
-                    Total Tickets
-                  </span>
-                  <div className="flex items-center text-white text-xl ">
-                    <IoTicketSharp /> <span>{sessionData.data.totalTickets}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="font-semibold text-white text-center">
-                    ingresos
-                  </span>
-                  <div className="flex items-center text-white text-xl ">
-                    <MdPeopleAlt /> <span>{sessionData.data.scannedTickets}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="font-semibold text-white text-center">
-                    Resantes
-                  </span>
-                  <div className="flex items-center text-white text-xl ">
-                    <MdClose />
-                    <span>{sessionData.data.remainingTickets}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
             <section className="mb-4 p-4">
               <label className="mb-2.5 block font-medium ">
                 Busca los E-tickets por codigo:
@@ -73,9 +40,10 @@ const OverviewValidatorPage = () => {
                   name="eticketId"
                   placeholder="Ingresa un E-ticket ID"
                   className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                  onChange={(e) => setEticketToSearch(e.target.value)}
-                  // onBlur={loginFormik.handleBlur}
-                  // value={loginFormik.values.email}
+                  onChange={(e) =>
+                    setEticketToSearch(e.target.value.toUpperCase())
+                  }
+                  maxLength={10}
                 />
 
                 <span className="absolute right-4 top-4">
@@ -88,8 +56,10 @@ const OverviewValidatorPage = () => {
                   <RoundedFilledButton
                     text="Buscar E-Ticket"
                     type="button"
-                    onClick={() => console.log("no hace nada jeje")}
+                    onClick={handleSearchEticket}
                     icon={<MdSearch size={25} />}
+                    disabled={eticketToSearch.length < 10}
+                    isLoading={checkTicketMutation.isPending}
                   />
                 ) : (
                   <RoundedFilledButton

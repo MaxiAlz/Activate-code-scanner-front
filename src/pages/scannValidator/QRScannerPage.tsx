@@ -5,36 +5,43 @@ import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { scanRepository } from "../../modules/scaner/repositories/scanRepository";
+import { useCheckTicketMutation } from "../../modules/scaner/hooks/useCheckTicketMutation";
 
 const QRScannerPage = () => {
   const navigate = useNavigate();
   const qrCodeRef = useRef<Html5Qrcode | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isCameraLoading, setIsCameraLoading] = useState(true);
   const isScanning = useRef(true); // Evita múltiples escaneos
+
+  const checkTicketMutation = useCheckTicketMutation();
 
   const handleCheckTicketsByQrCode = async (ticketCode: string) => {
     if (!isScanning.current) return; // Evita llamadas múltiples
     isScanning.current = false;
 
-    setIsLoading(true);
     try {
       await qrCodeRef.current?.pause(); // Pausa el escáner mientras se valida
-      const response = await scanRepository.checkTickets(ticketCode);
+      await checkTicketMutation.mutateAsync(ticketCode);
 
-      if (response?.status === 200) {
-        navigate("/scan-result", { state: response.data });
-      }
+      // navigate("/scan-result", { state: data });
+      navigate("/scan-result");
     } catch (error) {
-      alert(`Error al validar el ticket: ${error}`);
       console.error("Error validando QR:", error);
+      setErrorMessage(
+        "Error al validar el ticket. Por favor, intentá nuevamente."
+      );
+      alert(`Error al validar el ticket: ${error}`);
     } finally {
-      setIsLoading(false);
-      // No se reanuda el escáner porque se va a navegar
-      // Si querés reanudar en lugar de navegar, agregá:
-      // await qrCodeRef.current?.resume();
       isScanning.current = true;
+    }
+  };
+
+  const stopScanner = () => {
+    if (qrCodeRef.current) {
+      qrCodeRef.current
+        .stop()
+        .catch((error) => alert(`Error al detener el escáner: ${error}`));
     }
   };
 
@@ -63,30 +70,23 @@ const QRScannerPage = () => {
         alert(`Error al iniciar la cámara: ${error}`);
         setErrorMessage("No se pudo acceder a la cámara.");
       } finally {
-        setIsLoading(false);
+        setIsCameraLoading(false);
       }
     };
 
     initQrScanner();
 
-    return () => {
-      stopScanner();
-    };
+    return stopScanner;
   }, []);
 
-  const stopScanner = () => {
-    if (qrCodeRef.current) {
-      qrCodeRef.current
-        .stop()
-        .catch((error) => alert(`Error al detener el escáner: ${error}`));
-    }
-  };
+  const isValidating = checkTicketMutation.isPending || isCameraLoading;
 
   return (
     <div className="flex flex-col min-h-screen">
       <header>
         <NavbarDrawer />
       </header>
+
       <main className="flex-grow">
         <div className="md:flex justify-center items-center lg:m-10">
           <section className="md:w-1/3 sm:w-full md:shadow-xl">
@@ -102,13 +102,11 @@ const QRScannerPage = () => {
               <div
                 id="qr-scanner-container"
                 className="w-full h-[400px]"
-                style={{
-                  maxWidth: "100vw",
-                  maxHeight: "100vh",
-                }}
+                style={{ maxWidth: "100vw", maxHeight: "100vh" }}
               />
             )}
-            {isLoading ? (
+
+            {isValidating ? (
               <Loader />
             ) : (
               <>
@@ -124,6 +122,7 @@ const QRScannerPage = () => {
           </section>
         </div>
       </main>
+
       <FooterLogo />
     </div>
   );
