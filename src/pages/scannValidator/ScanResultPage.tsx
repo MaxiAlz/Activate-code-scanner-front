@@ -7,6 +7,7 @@ import {
   RoundedOutlineButton,
 } from "../../components/Buttons/RoundedButtons";
 import { MdArrowBack } from "react-icons/md";
+import { useValidateTicketMutation } from "../../modules/scaner/hooks/useCheckTicketMutation";
 
 interface dataTickets {
   personName: string;
@@ -28,6 +29,7 @@ interface ScanData {
 const ScanResultPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isPending } = useValidateTicketMutation();
 
   const scanData = queryClient.getQueryData<ScanData>([
     "ticketScan",
@@ -54,18 +56,43 @@ const ScanResultPage = () => {
             <MdArrowBack size={30} /> <p>Volver</p>
           </button>
         </div>
-        <div className="flex flex-col items-center text-center  gap-2 px-10 py-10">
+
+        <div className="flex flex-col items-center text-center  gap-2 px-10 py-5">
           <IoTicket size={50} />
           <p className="text-xl font-bold">¡TICKET ENCONTRADO!</p>
-          <p className="text-md ">
-            Verifica los datos y validá el ingreso de la persona
-          </p>
+
+          {ticket.state === "USED" && (
+            <div className="text-center my-4">
+              <p
+                className={`inline-block px-4 py-2 rounded-full text-sm font-semibold  bg-error text-white `}
+              >
+                ¡YA FUE UTILIZADO!
+              </p>
+
+              <p className="text-md ">
+                No puedes validar este ticket, ya fue utilizado previamente.
+              </p>
+            </div>
+          )}
+
+          {ticket.state === "BUYED" && (
+            <div className="text-center my-2 ">
+              <p
+                className={`inline-block px-4 py-2 rounded-full text-sm font-semibold  bg-success text-white `}
+              >
+                INGRESO PERMITIDO
+              </p>
+              <p className="text-md mt-4">
+                Verifica los datos y validá el ingreso de la persona
+              </p>
+            </div>
+          )}
         </div>
       </div>
       <div className="text-center my-4 text-lg text-primary font-bold uppercase">
         <p>{eventName}</p>
       </div>
-      <div className=" space-y-2 mx-10  text-xl">
+      <div className=" space-y-2 mx-10  ">
         <p className=" ">
           Nombre: <span className="font-semibold">{personName}</span>
         </p>
@@ -76,12 +103,17 @@ const ScanResultPage = () => {
         <p className="">
           Codigo: <span className="font-semibold">{ticket.code}</span>
         </p>
+        <p className="">
+          Ticket: <span className="font-semibold">{ticket.ticketTypeName}</span>
+        </p>
       </div>
 
       <div className="flex flex-col gap-4 mt-8 mx-4">
         <RoundedFilledButton
+          disabled={ticket.state === "USED"}
           onClick={() => navigate(`/scan-confirm/${ticket.code}`)}
           text="Validar y confirmar Ingreso"
+          isLoading={isPending}
         />
         <RoundedOutlineButton text="Cancelar" onClick={() => navigate("/")} />
       </div>

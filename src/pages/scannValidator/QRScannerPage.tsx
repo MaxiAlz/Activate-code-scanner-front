@@ -1,11 +1,12 @@
 import { MdErrorOutline } from "react-icons/md";
 import { FooterLogo } from "../../components/Navigation/FooterLogo";
-import { Loader } from "../../Loader/Loader";
-import { NavbarDrawer } from "../../components/Navigation/NavbarDrawer";
 import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useCheckTicketMutation } from "../../modules/scaner/hooks/useCheckTicketMutation";
+import { RoundedOutlineButton } from "../../components/Buttons/RoundedButtons";
+import { AxiosError } from "axios";
+import { TicketLoader } from "../../Loader/TicketLoader";
 
 const QRScannerPage = () => {
   const navigate = useNavigate();
@@ -23,15 +24,18 @@ const QRScannerPage = () => {
     try {
       await qrCodeRef.current?.pause(); // Pausa el escáner mientras se valida
       await checkTicketMutation.mutateAsync(ticketCode);
-
-      // navigate("/scan-result", { state: data });
       navigate("/scan-result");
-    } catch (error) {
-      console.error("Error validando QR:", error);
+    } catch (err) {
+      const error = err as AxiosError;
       setErrorMessage(
         "Error al validar el ticket. Por favor, intentá nuevamente."
       );
-      alert(`Error al validar el ticket: ${error}`);
+      if (error.response?.status === 500) {
+        navigate("/scan/error", {
+          replace: true,
+          state: { message: "Error interno del servidor" },
+        });
+      }
     } finally {
       isScanning.current = true;
     }
@@ -47,21 +51,21 @@ const QRScannerPage = () => {
 
   useEffect(() => {
     const initQrScanner = async () => {
+      setIsCameraLoading(true);
       try {
         const devices = await Html5Qrcode.getCameras();
         if (devices.length > 0) {
           qrCodeRef.current = new Html5Qrcode("qr-scanner-container");
 
+          const container = document.getElementById("qr-scanner-container")!;
+          const qrBoxSize =
+            Math.min(container.offsetWidth, container.offsetHeight) * 0.8;
+
           await qrCodeRef.current.start(
             { facingMode: "environment" },
-            { fps: 5, qrbox: { width: 300, height: 300 } },
-            (decodedText) => {
-              console.log("QR detectado:", decodedText);
-              handleCheckTicketsByQrCode(decodedText);
-            },
-            (errorMsg) => {
-              console.warn("No se pudo leer el código:", errorMsg);
-            }
+            { fps: 10, qrbox: { width: qrBoxSize, height: qrBoxSize } },
+            (decodedText) => handleCheckTicketsByQrCode(decodedText),
+            (errorMsg) => console.warn("No se pudo leer el código:", errorMsg)
           );
         } else {
           setErrorMessage("No se encontraron cámaras disponibles.");
@@ -75,19 +79,15 @@ const QRScannerPage = () => {
     };
 
     initQrScanner();
-
     return stopScanner;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isValidating = checkTicketMutation.isPending || isCameraLoading;
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header>
-        <NavbarDrawer />
-      </header>
-
-      <main className="flex-grow">
+      <main className="">
         <div className="md:flex justify-center items-center lg:m-10">
           <section className="md:w-1/3 sm:w-full md:shadow-xl">
             {errorMessage ? (
@@ -101,13 +101,13 @@ const QRScannerPage = () => {
             ) : (
               <div
                 id="qr-scanner-container"
-                className="w-full h-[400px]"
+                className="w-full h-full flex justify-center items-center bg-black"
                 style={{ maxWidth: "100vw", maxHeight: "100vh" }}
               />
             )}
 
-            {isValidating ? (
-              <Loader />
+            {isValidating && !errorMessage ? (
+              <TicketLoader />
             ) : (
               <>
                 <h1 className="text-center font-semibold text-xl mt-3">
@@ -117,13 +117,19 @@ const QRScannerPage = () => {
                   Acercá el código QR. Si tenés problemas para escanearlo, probá
                   buscarlo manualmente con el ID del E-Ticket.
                 </p>
+                <div className="flex justify-center gap-4 mb-6">
+                  <RoundedOutlineButton
+                    className="w-full mx-8"
+                    onClick={() => navigate("/")}
+                    text="Cancelar"
+                  />
+                </div>
+                <FooterLogo />
               </>
             )}
           </section>
         </div>
       </main>
-
-      <FooterLogo />
     </div>
   );
 };
