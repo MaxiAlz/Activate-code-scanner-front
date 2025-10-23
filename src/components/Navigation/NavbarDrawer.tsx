@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import {
-  MdClose,
-  MdHome,
-  MdLogout,
-  MdMenu,
-  MdPeople,
-  MdPerson,
-  MdRocketLaunch,
-} from "react-icons/md";
+import { MdClose, MdLogout, MdMenu } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { RootState, store } from "../../redux/store";
 import { logoutUser } from "../../redux/slices/auth/authThunks";
-
+import logoAppblanco from "../../assets/LOGO-TAKILLERO-BLANCO.svg";
+import faviconApp from "../../assets/TAKILLERO-FAVICON-NARANJA.svg";
+import { RoundedOutlineButton } from "../Buttons/RoundedButtons";
 const NavbarDrawer: React.FC = () => {
   const { sessionData } = useSelector(
     (state: RootState) => state.accessCodeAuth
@@ -25,8 +19,7 @@ const NavbarDrawer: React.FC = () => {
   };
 
   const handleLogout = async () => {
-    const resp = await dispatch(logoutUser());
-    console.log("resp=>", resp);
+    await dispatch(logoutUser());
     navigate("/");
   };
 
@@ -45,20 +38,9 @@ const NavbarDrawer: React.FC = () => {
               </button>
             </div>
 
-            {sessionData?.eventName ? (
-              <aside>
-                <div className="flex items-center text-2xl">
-                  <MdPerson size={25} />
-                  <span className=" font-semibold">Takillero!</span>
-                </div>
-                <p className="text-end text-sm text-boxdark-2">Scaner</p>
-              </aside>
-            ) : (
-              <div className="flex items-center text-2xl">
-                <MdRocketLaunch size={25} />
-                <span className=" font-semibold">Takillero!</span>
-              </div>
-            )}
+            <div className="flex items-center text-2xl">
+              <img src={logoAppblanco} alt="Logo" className="w-45" />
+            </div>
           </div>
         </div>
       </nav>
@@ -81,7 +63,7 @@ const NavbarDrawer: React.FC = () => {
           }`}
         >
           <div className="flex justify-between items-center px-4 py-2 border-b">
-            <MdRocketLaunch size={25} />
+            <img src={faviconApp} alt="Logo" className="w-10" />
             <h2 className="text-lg font-semibold ">Menú</h2>
             <button
               onClick={toggleNavbar}
@@ -108,28 +90,50 @@ const NavbarDrawer: React.FC = () => {
           {/* Contenido del Drawer */}
           <section className=" ">
             <div>
-              <Link
-                to="/"
-                className="px-3 py-2  rounded-md text-base font-medium flex items-center"
-              >
-                <MdHome className="mx-1" /> Inicio
-              </Link>
-              <Link
-                to="/"
-                className="flex items-center px-3 py-2 rounded-md text-base font-medium "
-              >
-                <MdPeople className="mx-1" /> Ingresos
-              </Link>
+              <div className="p-4 rounded-lg shadow-md my-4 mx-2 bg-white">
+                <div className="flex flex-col space-y-2">
+                  <div className="border-b pb-2">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Información del Evento
+                    </h3>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-gray-700 font-medium">
+                      Evento: {sessionData?.data.eventName}
+                    </p>
+                    <p className="text-gray-600">
+                      Código de Acceso: {sessionData?.data.nameAccessCode}
+                    </p>
+                    <p className="text-gray-600">
+                      Total de Tickets:{" "}
+                      <span className="font-bold">
+                        {sessionData?.data.totalTickets}
+                      </span>
+                    </p>
+                    <p className="text-gray-600">
+                      Faltantes:{" "}
+                      <span className="font-bold">
+                        {sessionData?.data.remainingTickets}
+                      </span>
+                    </p>
+                    <p className="text-gray-600">
+                      Ingresos:{" "}
+                      <span className="font-bold">
+                        {sessionData?.data.scannedTickets}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div>
-              <button
+            <div className="mx-2">
+              <RoundedOutlineButton
                 onClick={handleLogout}
-                className="mt-4  w-full px-3 py-2 text-start rounded-md items-center flex text-primary"
-              >
-                <MdLogout className="mx-2" />
-                Salir del sistema
-              </button>
+                text="Salir del sistema"
+                icon={MdLogout}
+                className="mt-4  w-full text-primary "
+              />
             </div>
           </section>
         </div>

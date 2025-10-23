@@ -25,7 +25,6 @@ const useLoginFormik = () => {
     ) => {
       formikHelpers.setSubmitting(true);
       const thunkResponse = await dispatch(loginUser(values));
-      console.log("thunkResponse", thunkResponse);
       if (thunkResponse!.status == 200) navigate("/overview");
       formikHelpers.setSubmitting(false);
     },

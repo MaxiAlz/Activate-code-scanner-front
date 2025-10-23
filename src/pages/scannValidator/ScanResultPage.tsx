@@ -36,8 +36,6 @@ const ScanResultPage = () => {
     "last-scanned-ticket",
   ]);
 
-  console.log("scanData", scanData);
-
   if (!scanData?.data) {
     navigate("/");
     return null;

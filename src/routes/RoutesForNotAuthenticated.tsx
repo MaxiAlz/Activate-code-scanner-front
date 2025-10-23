@@ -10,7 +10,6 @@ interface LoginRouterProps {
 
 const RoutesForNotAuthenticated = ({ children }: LoginRouterProps) => {
   const { status } = useSelector((state: RootState) => state.accessCodeAuth);
-  console.log("status", status);
 
   if (status === AuthStatus.AUTHENTICATED) {
     return <Navigate to="/overview" />;

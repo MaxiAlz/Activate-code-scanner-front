@@ -16,10 +16,7 @@ const OverviewValidatorPage = () => {
   const checkTicketMutation = useCheckTicketMutation();
   const [eticketToSearch, setEticketToSearch] = useState<string>("");
 
-  console.log("sessionData", sessionData);
-
   const handleSearchEticket = async () => {
-    console.log("eticketToSearch", eticketToSearch);
     await checkTicketMutation.mutateAsync(eticketToSearch);
   };
   return (

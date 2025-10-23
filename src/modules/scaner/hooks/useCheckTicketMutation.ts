@@ -10,14 +10,14 @@ export const useCheckTicketMutation = () => {
       const response = await scanRepository.checkTickets(ticketCode);
       return response.data; // asumimos que response tiene .data con la estructura de tu backend
     },
-    retry: false, // no reintenta porque no queremos múltiples escaneos fallidos
+    retry: false,
     onSuccess: (data) => {
-      console.log("data", data);
       navigate(`/scan-result`);
       queryClient.setQueryData(["ticketScan", "last-scanned-ticket"], data);
     },
     onError: (error) => {
       console.log("error", error);
+      alert("Error al validar el ticket. Por favor, intente nuevamente.");
     },
   });
 };
@@ -31,7 +31,6 @@ export const useValidateTicketMutation = () => {
       return response.data;
     },
     onSuccess: () => {
-      // Limpia la cache relacionada con el escaneo previo
       queryClient.removeQueries({ queryKey: ["ticketScan"] });
     },
   });

@@ -24,8 +24,6 @@ const ScanConfirmPage = () => {
   const handleGoBackToScan = () => navigate("/scan-qr");
   const handleGoHome = () => navigate("/");
 
-  console.log("successData Confirms", successData);
-
   useEffect(() => {
     if (ticketCode) {
       mutate([ticketCode]);

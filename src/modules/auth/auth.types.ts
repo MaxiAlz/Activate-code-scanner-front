@@ -20,8 +20,8 @@ interface userAuthenticatedResponse {
 }
 
 interface UserAuthenticatedData {
-  nameAccessCode: string;
   eventName: string;
+  nameAccessCode: string;
   totalTickets: number;
   scannedTickets: number;
   remainingTickets: number;

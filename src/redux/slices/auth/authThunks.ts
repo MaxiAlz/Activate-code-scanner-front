@@ -18,13 +18,6 @@ const loginUser =
     try {
       const response = await apiService.post("/Auth/accesscode", userData);
 
-      // Preparar manualmente la data para guardar en el estado
-      // const dataAuthenticated = {
-      //   code: response.data,
-      //   userName: userData.userName,
-      // };
-      console.log("response", response);
-
       if (response.status === 200) {
         dispatch(setUserAuthenticated(response.data));
         return response;
@@ -56,7 +49,6 @@ const logoutUser =
   async (dispatch: Dispatch) => {
     try {
       const response = await apiService.post("/Auth/logout");
-      console.log("response", response);
       if (response.status === 200) {
         dispatch(setLogoutUser());
       }

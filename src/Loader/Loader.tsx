@@ -1,12 +1,11 @@
-import { IoTicket } from "react-icons/io5";
+import logoAppNaranja from "../assets/LOGO-TAKILLERO-NARANJA.svg";
 
 const Loader = () => {
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-white w-full dark:bg-boxdark-2">
       <div className="h-16 w-16 animate-spin rounded-full border-4 border-solid border-primary border-t-transparent"></div>
       <div className="flex my-4 font-bold uppercase text-primary text-2xl text-center justify-center">
-        <IoTicket size={20} />
-        <h2 className="">Takillero!</h2>
+        <img src={logoAppNaranja} alt="Logo" className="w-45" />
       </div>
     </div>
   );

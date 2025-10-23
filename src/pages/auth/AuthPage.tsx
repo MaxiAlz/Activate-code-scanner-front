@@ -1,8 +1,8 @@
-import { MdQrCodeScanner, MdRocketLaunch } from "react-icons/md";
+import { MdQrCodeScanner } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
 import { RoundedOutlineButton } from "../../components/Buttons/RoundedButtons";
 import { LoginForm } from "../../modules/auth/components/LoginForm";
-
+import logoAppNaranja from "../../assets/LOGO-TAKILLERO-NARANJA.svg";
 const AuthPage = () => {
   const navigator = useNavigate();
   return (
@@ -32,8 +32,7 @@ const AuthPage = () => {
           />
         </div>
         <div className="flex items-center text-primary  justify-center">
-          <MdRocketLaunch size={20} />
-          <h2 className="text-xl font-bold uppercase">Takillero!</h2>
+          <img src={logoAppNaranja} alt="Logo" className="w-45" />
         </div>
       </div>
     </div>
