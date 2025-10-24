@@ -7,7 +7,7 @@ export interface ApiResponse<T> {
 
 export interface TicketsDataByScan {
   message: string;
-  data: TicketScanedDetail;
+  data?: TicketScanedDetail;
 }
 
 interface TicketScanedDetail {
@@ -27,4 +27,21 @@ export enum TicketStatesEnum {
   USED = "USED",
   BUYED = "BUYED",
   EXPIRED = "EXPIRED",
+}
+
+interface dataTickets {
+  personName: string;
+  personDni: string;
+  eventName: string;
+  ticket: {
+    id: number;
+    code: string;
+    ticketTypeName: string;
+    state: string;
+  };
+}
+
+export interface ScanData {
+  message: string;
+  data: dataTickets;
 }
