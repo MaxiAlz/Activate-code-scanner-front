@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { RootState, store } from "../../redux/store";
 import { logoutUser } from "../../redux/slices/auth/authThunks";
-import logoAppblanco from "../../assets/LOGO-TAKILLERO-BLANCO.svg";
+import logoAppblanco from "../../assets/LOGO-TAKILLERO-WHITE.svg";
 import faviconApp from "../../assets/TAKILLERO-FAVICON-NARANJA.svg";
 import { RoundedOutlineButton } from "../Buttons/RoundedButtons";
 const NavbarDrawer: React.FC = () => {

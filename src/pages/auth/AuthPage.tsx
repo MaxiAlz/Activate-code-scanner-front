@@ -2,7 +2,7 @@ import { MdQrCodeScanner } from "react-icons/md";
 import { Link, useNavigate } from "react-router";
 import { RoundedOutlineButton } from "../../components/Buttons/RoundedButtons";
 import { LoginForm } from "../../modules/auth/components/LoginForm";
-import logoAppNaranja from "../../assets/LOGO-TAKILLERO-NARANJA.svg";
+import logoAppNaranja from "../../assets/LOGO-TAKILLERO-ORANGE.svg";
 const AuthPage = () => {
   const navigator = useNavigate();
   return (

@@ -1,4 +1,4 @@
-import logoAppNegro from "../../assets/LOGO-TAKILLERO-NEGRO.svg";
+import logoAppNegro from "../../assets/LOGO-TAKILLERO-BLACK.svg";
 
 const FooterLogo = () => {
   return (

@@ -1,4 +1,4 @@
-import logoAppNaranja from "../assets/LOGO-TAKILLERO-NARANJA.svg";
+import logoAppNaranja from "../assets/LOGO-TAKILLERO-ORANGE.svg";
 
 const Loader = () => {
   return (
