@@ -15,8 +15,6 @@ const ScanResultPage = () => {
     "last-scanned-ticket",
   ]);
 
-  console.log("scanData", scanData);
-
   if (!scanData?.data && !scanData?.message) {
     return <Navigate to="/" replace />;
   }
